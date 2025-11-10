@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <title>Famous Quotes: Results</title>
+    <style>
+        img {
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="bg-primary text-white p-4">Famous Quotes</h1>
+
+    <!-- Display the quotes -->
+    <% for (let row of rows) { %>
+        "<%= row.quote %>" <br>
+            <a class="authors" href="#" authorId="<%= row.authorId %>">
+                <%= row.firstName %> <%= row.lastName %>
+            </a>
+            <br><br>
+    <% } %>
+
+    <!-- Bootstrap Modal -->
+    <div class="modal fade" id="authorModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="authorName">Modal title</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="authorImage">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Bootstrap JS once -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    
+    <script>
+        // Get Bootstrap modal
+        const modal = new bootstrap.Modal(document.getElementById('authorModal'));
+
+        // Get all author links
+        const authorLinks = document.querySelectorAll('.authors');
+        
+        // Click on each author link
+        for (let link of authorLinks) {
+            link.addEventListener('click', async function(e) {
+                e.preventDefault();
+                
+                // Get author ID
+                const authorId = this.getAttribute('authorId');
+                
+                // Fetch data (FIXED: added opening parenthesis)
+                const response = await fetch(`/api/authors/${authorId}`);
+                const author = await response.json();
+                
+                // Show in modal
+                document.getElementById('authorName').textContent = 
+                    author.firstName + ' ' + author.lastName;
+                document.getElementById('authorImage').src = author.portrait;
+                
+                // Open modal
+                modal.show();
+            });
+        }
+    </script>
+
+</body>
+</html>

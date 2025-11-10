@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>    
+    <title>Famous Quotes</title>
+</head>
+<body class="text-center">
+    
+    <h1 class="bg-primary text-white p-4">Famous Quotes</h1>
+
+    <form id="searchByKeywordForm" action="/searchByKeyword" method="GET">
+      <label>Keyword: <input type="text" name="keyword" id="keyword"></label>
+      <button class="btn btn-outline-success">Search</button>
+    </form>
+
+    <br><hr><br>
+
+    <form action="/searchByAuthor">
+
+       Author: 
+       <select name="authorId">
+         <% for (row of rows) { %>
+         <option value="<%=row.authorId %>">
+          <%=row.firstName %> <%=row.lastName %>
+        </option>
+        <% } %>
+       </select>
+       <button class="btn btn-outline-success">Search</button>
+
+    </form>
+
+    <script src="/js/home.js"></script>
+
+
+<footer>
+
+</footer>
+
+</body>
+</html>
