@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/head') %>
+    <title>All Quotes - Famous Quotes</title>
+</head>
+<body>
+    <%- include('partials/nav') %>
+
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="bi bi-chat-quote"></i> Updating & Deleting Quotes</h2>
+            <a href="/quote/new" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> Add New Quote
+            </a>
+        </div>
+
+        <% if (quotes.length === 0) { %>
+        <div class="alert alert-info">
+            No quotes found. Add some quotes to get started.
+        </div>
+        <% } else { %>
+        <div class="table-responsive">
+            <table class="table table-hover table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th style="width: 100px;">Actions</th>
+                        <th>Quote</th>
+                        <th>Author</th>
+                        <th>Category</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for (let quote of quotes) { %>
+                    <tr>
+                        <td>
+                            <a href="/quote/edit?quoteId=<%= quote.quoteId %>" class="btn btn-sm btn-outline-primary me-1">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="/quote/delete?quoteId=<%= quote.quoteId %>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this quote?')">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                        <td><%= quote.quote %></td>
+                        <td><%= quote.firstName %> <%= quote.lastName %></td>
+                        <td><span class="badge bg-secondary"><%= quote.category || '-' %></span></td>
+                    </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+        <% } %>
+
+        <a href="/admin" class="btn btn-outline-secondary mt-3">
+            <i class="bi bi-arrow-left"></i> Back to Admin
+        </a>
+    </div>
+
+</body>
+</html>
