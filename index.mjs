@@ -88,6 +88,30 @@ app.get('/author/new', isAuthenticated, async (req, res) => {
     res.render('newAuthor', { message: null });
 });
 
+app.get('/author/edit', isAuthenticated, async (req, res) => {
+    let authorId = req.query.authorId;
+    let sql = `SELECT *,
+               DATE_FORMAT(dob, '%Y-%m-%d') as dobISO,
+               DATE_FORMAT(dod, '%Y-%m-%d') as dodISO
+               FROM authors
+               WHERE authorId = ?`;
+    const [rows] = await pool.query(sql, [authorId]);
+    res.render('editAuthor', { authorInfo: rows, message: null });
+});
+
+// Delete author
+app.get('/author/delete', isAuthenticated, async (req, res) => {
+    let authorId = req.query.authorId;
+    let sql = `DELETE FROM authors WHERE authorId = ?`;
+    
+    try {
+        await pool.query(sql, [authorId]);
+    } catch (err) {
+        console.error(err);
+    }
+    res.redirect('/authors');
+});
+
 
 // Process adding new author
 app.post('/author/new', isAuthenticated, async (req, res) => {
@@ -134,6 +158,105 @@ app.post('/author/edit', isAuthenticated, async (req, res) => {
         console.error(err);
         res.redirect('/authors');
     }
+});
+// to list all quotes
+app.get('/quotes', isAuthenticated, async (req, res) => {
+    let sql = `SELECT q.quoteId, q.quote, q.category, q.likes, a.firstName, a.lastName
+               FROM quotes q
+               JOIN authors a ON q.authorId = a.authorId
+               ORDER BY a.lastName`;
+    const [rows] = await pool.query(sql);
+    res.render('quoteList', { quotes: rows });
+});
+
+// Display form to add new quote
+app.get('/quote/new', isAuthenticated, async (req, res) => {
+    let authorSql = `SELECT authorId, firstName, lastName FROM authors ORDER BY lastName`;
+    const [authors] = await pool.query(authorSql);
+    
+    let categorySql = `SELECT DISTINCT category FROM quotes WHERE category IS NOT NULL ORDER BY category`;
+    const [categories] = await pool.query(categorySql);
+    
+    res.render('newQuote', { authors, categories, message: null });
+});
+
+
+
+// Process adding new quote
+app.post('/quote/new', isAuthenticated, async (req, res) => {
+    let { quote, authorId, category } = req.body;
+
+    let sql = `INSERT INTO quotes (quote, authorId, category) VALUES (?, ?, ?)`;
+    
+    try {
+        await pool.query(sql, [quote, authorId, category]);
+        
+        let authorSql = `SELECT authorId, firstName, lastName FROM authors ORDER BY lastName`;
+        const [authors] = await pool.query(authorSql);
+        let categorySql = `SELECT DISTINCT category FROM quotes WHERE category IS NOT NULL ORDER BY category`;
+        const [categories] = await pool.query(categorySql);
+        
+        res.render('newQuote', { authors, categories, message: 'Quote added successfully!' });
+    } catch (err) {
+        console.error(err);
+        
+        let authorSql = `SELECT authorId, firstName, lastName FROM authors ORDER BY lastName`;
+        const [authors] = await pool.query(authorSql);
+        let categorySql = `SELECT DISTINCT category FROM quotes WHERE category IS NOT NULL ORDER BY category`;
+        const [categories] = await pool.query(categorySql);
+        
+        res.render('newQuote', { authors, categories, message: 'Error adding quote: ' + err.message });
+    }
+});
+
+
+// Display form to edit quote
+app.get('/quote/edit', isAuthenticated, async (req, res) => {
+    let quoteId = req.query.quoteId;
+    
+    let quoteSql = `SELECT * FROM quotes WHERE quoteId = ?`;
+    const [quoteRows] = await pool.query(quoteSql, [quoteId]);
+    
+    let authorSql = `SELECT authorId, firstName, lastName FROM authors ORDER BY lastName`;
+    const [authors] = await pool.query(authorSql);
+    
+    let categorySql = `SELECT DISTINCT category FROM quotes WHERE category IS NOT NULL ORDER BY category`;
+    const [categories] = await pool.query(categorySql);
+    
+    res.render('editQuote', { quoteInfo: quoteRows, authors, categories, message: null });
+});
+
+// Process updating quote
+app.post('/quote/edit', isAuthenticated, async (req, res) => {
+    let { quoteId, quote, authorId, category } = req.body;
+
+    let sql = `UPDATE quotes
+               SET quote = ?,
+                   authorId = ?,
+                   category = ?
+               WHERE quoteId = ?`;
+    
+    try {
+        await pool.query(sql, [quote, authorId, category, quoteId]);
+        res.redirect('/quotes');
+    } catch (err) {
+        console.error(err);
+        res.redirect('/quotes');
+    }
+});
+
+
+// Delete quote
+app.get('/quote/delete', isAuthenticated, async (req, res) => {
+    let quoteId = req.query.quoteId;
+    let sql = `DELETE FROM quotes WHERE quoteId = ?`;
+    
+    try {
+        await pool.query(sql, [quoteId]);
+    } catch (err) {
+        console.error(err);
+    }
+    res.redirect('/quotes');
 });
 
 

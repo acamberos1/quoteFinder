@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/head') %>
+    <title>Admin Dashboard </title>
+</head>
+<body>
+    <%- include('partials/nav') %>
+
+    <div class="container mt-5">
+        <h1 class="text-center mb-5">
+            <i class="bi bi-speedometer2"></i> Admin Section
+        </h1>
+
+        <div class="row justify-content-center">
+            <div class="col-md-3 mb-4">
+                <a href="/authors" class="text-decoration-none">
+                    <div class="card text-center shadow-sm h-100">
+                        <div class="card-body py-4">
+                            <i class="bi bi-people display-4 text-primary"></i>
+                            <h5 class="card-title mt-3">Display Authors</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3 mb-4">
+                <a href="/author/new" class="text-decoration-none">
+                    <div class="card text-center shadow-sm h-100">
+                        <div class="card-body py-4">
+                            <i class="bi bi-person-plus display-4 text-success"></i>
+                            <h5 class="card-title mt-3">Add Authors</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3 mb-4">
+                <a href="/quotes" class="text-decoration-none">
+                    <div class="card text-center shadow-sm h-100">
+                        <div class="card-body py-4">
+                            <i class="bi bi-chat-quote display-4 text-info"></i>
+                            <h5 class="card-title mt-3">Display Quotes</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3 mb-4">
+                <a href="/quote/new" class="text-decoration-none">
+                    <div class="card text-center shadow-sm h-100">
+                        <div class="card-body py-4">
+                            <i class="bi bi-plus-circle display-4 text-warning"></i>
+                            <h5 class="card-title mt-3">Add Quotes</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+   
+</body>
+</html>
